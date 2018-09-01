@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">Paint</string>
     <string name="clear">Clear</string>
+    <string name="black">Black</string>
+    <string name="green">Green</string>
+    <string name="yellow">Yellow</string>
+    <string name="blue">Blue</string>
 </resources>

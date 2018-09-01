@@ -11,9 +11,11 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
+import java.util.ArrayList;
+
 public class DrawView extends View {
-    private final Paint mPaint = new Paint();
-    private final Path mPath = new Path();
+    private PathProvider mPathProvider = new PathProvider();
+    private int mCurrentColor = Color.BLACK;
 
     private float mCurX = 0f;
     private float mCurY = 0f;
@@ -26,23 +28,24 @@ public class DrawView extends View {
     }
 
     private void init() {
-        mPaint.setColor(Color.BLACK);
-        mPaint.setStyle(Paint.Style.STROKE);
-        mPaint.setStrokeJoin(Paint.Join.ROUND);
-        mPaint.setStrokeCap(Paint.Cap.ROUND);
-        mPaint.setStrokeWidth(8f);
-        mPaint.setAntiAlias(true);
+        setColor(mCurrentColor);
+    }
+
+    public void setColor(int color) {
+        mCurrentColor = color;
     }
 
     public void clearCanvas() {
-        mPath.reset();
+        mPathProvider.clear();
         invalidate();
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        canvas.drawPath(mPath, mPaint);
+        for (PaintPath paintPath : mPathProvider.getAllPaths()){
+            canvas.drawPath(paintPath.getPath(), paintPath.getPaint());
+        }
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -68,24 +71,31 @@ public class DrawView extends View {
     }
 
     private void actionDown(float x, float y) {
-        mPath.moveTo(x, y);
+        Path path = mPathProvider.getPath(mCurrentColor).getPath();
+
+        path.moveTo(x, y);
         mCurX = x;
         mCurY = y;
     }
 
     private void actionMove(float x, float y) {
-        mPath.quadTo(mCurX, mCurY, (x + mCurX) / 2, (y + mCurY) / 2);
+        Path path = mPathProvider.getPath(mCurrentColor).getPath();
+
+        path.quadTo(mCurX, mCurY, (x + mCurX) / 2, (y + mCurY) / 2);
+
         mCurX = x;
         mCurY = y;
     }
 
     private void actionUp() {
-        mPath.lineTo(mCurX, mCurY);
+        Path path = mPathProvider.getPath(mCurrentColor).getPath();
+
+        path.lineTo(mCurX, mCurY);
 
         if (mStartX == mCurX && mStartY == mCurY) {
-            mPath.lineTo(mCurX, mCurY + 2);
-            mPath.lineTo(mCurX + 1, mCurY + 2);
-            mPath.lineTo(mCurX + 1, mCurY);
+            path.lineTo(mCurX, mCurY + 2);
+            path.lineTo(mCurX + 1, mCurY + 2);
+            path.lineTo(mCurX + 1, mCurY);
         }
     }
 }

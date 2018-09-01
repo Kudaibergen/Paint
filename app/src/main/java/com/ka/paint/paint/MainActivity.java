@@ -1,5 +1,6 @@
 package com.ka.paint.paint;
 
+import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -25,10 +26,33 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.clear) {
-            mDraw.clearCanvas();
-            return true;
+        switch (item.getItemId()){
+            case R.id.clear : {
+                mDraw.clearCanvas();
+                break;
+            }
+
+            case R.id.black : {
+                mDraw.setColor(Color.BLACK);
+                break;
+            }
+
+            case R.id.green : {
+                mDraw.setColor(Color.GREEN);
+                break;
+            }
+
+            case R.id.yellow : {
+                mDraw.setColor(Color.YELLOW);
+                break;
+            }
+
+            case R.id.blue : {
+                mDraw.setColor(Color.BLUE);
+                break;
+            }
         }
+
         return super.onOptionsItemSelected(item);
     }
 }
